@@ -17,7 +17,10 @@ function App() {
   useEffect(()=>{
     moment.locale("ar");
     setDateAndTime(moment().format('MMMM Do YYYY, h:mm:ss a'));
-    axios.get('https://api.openweathermap.org/data/2.5/weather?lat=46.7&lon=24.7&appid=bb9ebeb0e4dd73cf3b93a7ecef9fa1b1')
+    const controller=new AbortController();
+    axios.get('https://api.openweathermap.org/data/2.5/weather?lat=46.7&lon=24.7&appid=bb9ebeb0e4dd73cf3b93a7ecef9fa1b1',{
+      signal:controller.signal,
+    })
     .then(function(response){
       console.log(response);
       const responseDegree=Math.round(response.data.main.temp-272.15);
@@ -37,6 +40,7 @@ function App() {
     .catch(function(error){
       console.log(error);
     })
+    return()=>controller.abort()
   },[])
   function handleLanguageChange(){
     if(locale=="en"){
